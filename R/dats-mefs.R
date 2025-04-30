@@ -94,7 +94,8 @@ dat_gebco <- function(.return = c("SpatRaster", "character")) {
   .return <- match.arg(.return)
   path <- system.file("extdata", "dat_gebco.tif",
                       package = "patter", mustWork = TRUE)
-  if (.return == "character") {
+  if (.return == "character" |
+        (Sys.info()[["sysname"]] == "Linux" && Sys.getenv("JULIA_SESSION") == "TRUE") {
     return(path)
   } else {
     return(terra::rast(path))
