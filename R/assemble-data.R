@@ -348,6 +348,9 @@ assemble_xinit_containers <- function(.timeline,
                                       .threshold = NULL) {
 
   # Check user inputs
+  if(grepl("Spat", class(.map)) && os_linux() && julia_session()) {
+    stop("`.map` only supports `terra` classes on Linux when `JUILA_SESSION = \"FALSE\"`\nPlease provide a two-column `matrix` of the four coordinates of the study area or set `.threshold` instead.")
+  }
   check_timeline(.timeline)
   check_named_list(.xinit)
   check_names(.xinit, c("forward", "backward"))
@@ -380,6 +383,9 @@ assemble_acoustics_containers <- function(.timeline,
                                           .threshold = NULL) {
 
   # Check user inputs
+  if(grepl("Spat", class(.map)) && os_linux() && julia_session()) {
+    stop("`.map` only supports `terra` classes on Linux when `JUILA_SESSION = \"FALSE\"`\nPlease provide a two-column `matrix` of the four coordinates of the study area or set `.threshold` instead.")
+  }
   check_timeline(.timeline)
   check_inherits(.acoustics, "data.table")
   directions <- c("forward", "backward")

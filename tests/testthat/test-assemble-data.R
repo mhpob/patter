@@ -472,3 +472,55 @@ test_that("assemble_acoustics_containers() works", {
   expect_true(all(containers$backward$radius < 10000))
 
 })
+
+test_that("Errors when Spat* is supplied to .map with Linux+Julia", {
+  skip_on_os(c("windows", "mac", "solaris"))
+
+  original_envvar <- Sys.getenv("JULIA_SESSION")
+  Sys.setenv(JULIA_SESSION = "FALSE")
+  dummy_map <- dat_gebco()
+  Sys.setenv(JULIA_SESSION = "TRUE")
+
+  assemble_xinit_containers(
+    .map = dummy_map,
+    .timeline = seq(as.POSIXct("2016-03-01 00:00:00", tz = "UTC"),
+      as.POSIXct("2016-04-01 00:00:00"),
+      by = "2 mins"),
+    .xinit = list(forward = data.table(x = 708913.6, y = 6256280), backward = NULL),
+    .radius = 750,
+    .mobility = 750
+    )  |>
+    expect_error("`.map` only supports `terra` classes on Linux when `JUILA_SESSION = \"FALSE\"`")
+
+  assemble_acoustics_containers(
+    .map = dummy_map,
+    .timeline = seq(as.POSIXct("2016-03-01 00:00:00", tz = "UTC"),
+      as.POSIXct("2016-04-01 00:00:00"),
+      by = "2 mins"),
+    .acoustics = data.table(timestamp =
+                            as.POSIXct(c(
+                              "2016-01-01 00:00:00",
+                              "2016-01-01 00:00:00",
+                              "2016-01-01 00:00:00",
+                              "2016-01-01 00:02:00",
+                              "2016-01-01 00:02:00",
+                              "2016-01-01 00:02:00",
+                              "2016-01-01 00:04:00",
+                              "2016-01-01 00:04:00",
+                              "2016-01-01 00:04:00",
+                              "2016-01-01 00:04:00"),
+                              tz = "UTC"),
+                          sensor_id = c(1, 2, 3, 1, 2, 3, 1, 2, 3, 4),
+                          obs = c(1, 1, 0, 0, 0, 0, 0, 0, 1, 1),
+                          receiver_x = c(1, 2, 3, 1, 2, 3, 1, 2, 3, 4),
+                          receiver_y = c(1, 2, 3, 1, 2, 3, 1, 2, 3, 4),
+                          receiver_alpha = 4,
+                          receiver_beta = -0.01,
+                          receiver_gamma = 1000),
+    .mobility = 750
+  ) |>
+  expect_error("`.map` only supports `terra` classes on Linux when `JUILA_SESSION = \"FALSE\"`")
+
+
+  Sys.setenv(JULIA_SESSION = original_envvar)
+})
