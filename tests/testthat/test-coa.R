@@ -143,3 +143,16 @@ test_that("coa() works", {
   }) |> invisible()
 
 })
+
+test_that("Errors with Linux+Julia", {
+  skip_on_os(c("windows", "mac", "solaris"))
+
+  original_envvar <- Sys.getenv("JULIA_SESSION")
+  Sys.setenv(JULIA_SESSION = "TRUE")
+
+  coa() |>
+    expect_error("`coa` cannot be used on Linux when `JUILA_SESSION = \"TRUE\"`.")
+
+
+  Sys.setenv(JULIA_SESSION = original_envvar)
+})

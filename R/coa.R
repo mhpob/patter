@@ -39,6 +39,10 @@
 coa <- function(.map,
                 .detections, .moorings = NULL, .delta_t, .split = NULL,
                 .plot_weights = TRUE, ..., .one_page = TRUE) {
+  #### Check OS and Julia session
+  if(os_linux() && julia_session()) {
+    abort("`coa` cannot be used on Linux when `JUILA_SESSION = \"TRUE\"`.")
+  }
 
   #### Check user inputs
   # check_dots_used: hist() warnings used
