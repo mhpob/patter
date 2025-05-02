@@ -92,10 +92,18 @@ NULL
 
 dat_gebco <- function(.return = c("SpatRaster", "character")) {
   .return <- match.arg(.return)
-  path <- system.file("extdata", "dat_gebco.tif",
-                      package = "patter", mustWork = TRUE)
-  if (.return == "character" |
-        (Sys.info()[["sysname"]] == "Linux" && Sys.getenv("JULIA_SESSION") == "TRUE") {
+  path <- system.file(
+    "extdata",
+    "dat_gebco.tif",
+    package = "patter",
+    mustWork = TRUE
+  )
+  if (.return == "character") {
+    return(path)
+  } else if (os_linux() && julia_session()) {
+    warning(
+      "On Linux with `JULIA_SESSION = \"TRUE\"`.\nReturning file path."
+    )
     return(path)
   } else {
     return(terra::rast(path))
@@ -107,9 +115,18 @@ dat_gebco <- function(.return = c("SpatRaster", "character")) {
 
 dat_coast <- function(.return = c("SpatVector", "character")) {
   .return <- match.arg(.return)
-  path <- system.file("extdata", "dat_coast.gpkg",
-                      package = "patter", mustWork = TRUE)
+  path <- system.file(
+    "extdata",
+    "dat_coast.gpkg",
+    package = "patter",
+    mustWork = TRUE
+  )
   if (.return == "character") {
+    return(path)
+  } else if (os_linux() && julia_session()) {
+    warning(
+      "On Linux with `JULIA_SESSION = \"TRUE\"`.\nReturning file path."
+    )
     return(path)
   } else {
     return(terra::vect(path))
@@ -121,9 +138,18 @@ dat_coast <- function(.return = c("SpatVector", "character")) {
 
 dat_mpa <- function(.return = c("SpatVector", "character")) {
   .return <- match.arg(.return)
-  path <- system.file("extdata", "dat_mpa.gpkg",
-                      package = "patter", mustWork = TRUE)
+  path <- system.file(
+    "extdata",
+    "dat_mpa.gpkg",
+    package = "patter",
+    mustWork = TRUE
+  )
   if (.return == "character") {
+    return(path)
+  } else if (os_linux() && julia_session()) {
+    warning(
+      "On Linux with `JULIA_SESSION = \"TRUE\"`.\nReturning file path."
+    )
     return(path)
   } else {
     return(terra::vect(path))
